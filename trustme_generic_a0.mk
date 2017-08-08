@@ -20,128 +20,62 @@
 # Contact Information:
 # Fraunhofer AISEC <trustme@aisec.fraunhofer.de>
 #
-
-# Get the long list of APNs
-PRODUCT_COPY_FILES := device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
-
-# Inherit from those products. Most specific first.
-$(call inherit-product, device/fraunhofer/trustme_generic/a0/full_base_telephony.mk)
-#$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
-
-#----------------------------------------------------------------------------#
-# missing stuff from generic_no_telephony.mk
-#----------------------------------------------------------------------------#
-PRODUCT_PACKAGES += \
-    OneTimeInitializer \
-    Provision \
-    SystemUI
-#----------------------------------------------------------------------------#
-
-
-#----------------------------------------------------------------------------#
-# missing stuff from core.mk
-#----------------------------------------------------------------------------#
-PRODUCT_PACKAGES += \
-    DownloadProvider \
-    ExternalStorageProvider \
-    KeyChain \
-    Keyguard \
-    LatinIME \
-    Launcher2 \
-    Settings \
-    Telecom \
-    TeleService \
-    VpnDialogs
-#----------------------------------------------------------------------------#
-
-#$(call inherit-product, device/fraunhofer/trustme_generic/a0/core_base.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_base.mk)
-#$(call inherit-product, $(SRC_TARGET_DIR)/product/core_tiny.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_small.mk)
-
-$(call inherit-product-if-exists, frameworks/base/data/fonts/fonts.mk)
-$(call inherit-product-if-exists, external/google-fonts/dancing-script/fonts.mk)
-$(call inherit-product-if-exists, external/google-fonts/carrois-gothic-sc/fonts.mk)
-$(call inherit-product-if-exists, external/google-fonts/coming-soon/fonts.mk)
-$(call inherit-product-if-exists, external/google-fonts/cutive-mono/fonts.mk)
-$(call inherit-product-if-exists, external/lohit-fonts/fonts.mk)
-$(call inherit-product-if-exists, external/noto-fonts/fonts.mk)
-$(call inherit-product-if-exists, external/naver-fonts/fonts.mk)
-
-$(call inherit-product-if-exists, external/hyphenation-patterns/patterns.mk)
-$(call inherit-product-if-exists, frameworks/base/data/keyboards/keyboards.mk)
-$(call inherit-product-if-exists, frameworks/base/data/sounds/AudioPackage6.mk)
-
-
-##----------------------------------------------------------------------------#
-## override with values of core_minimal.mk (hammerhead needs ethernet)
-##----------------------------------------------------------------------------#
-#PRODUCT_PACKAGES += \
-#    PackageInstaller \
-#    ethernet-service
-#
-## The order of PRODUCT_SYSTEM_SERVER_JARS matters.
-#PRODUCT_SYSTEM_SERVER_JARS := \
-#    services \
-#    ethernet-service \
-#    wifi-service
-#
-#PRODUCT_COPY_FILES += \
-#    system/core/rootdir/etc/public.libraries.android.txt:system/etc/public.libraries.txt
-##----------------------------------------------------------------------------#
-
-
-#----------------------------------------------------------------------------#
-# override isome values of device/lge/hammerhead/device.mk
-#----------------------------------------------------------------------------#
-PRODUCT_PROPERTY_OVERRIDES += \
-    drm.service.enabled=false
-#----------------------------------------------------------------------------#
-
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    ro.adb.secure=1
-
-OUT_DIR := out-a0
-
-##################################################
-# Configure Android0
-
-TRUSTME_A0 := true
-
 DEVICE_PACKAGE_OVERLAYS += device/fraunhofer/trustme_generic/a0/overlay
 
 PRODUCT_PACKAGES += \
-   TrustmeService \
-   rilproxy \
-   rild \
+   Launcher3 \
+   WallpaperPicker \
+   ChromePublic \
    sensors-client.default \
-   perf \
+   FDroid \
+   OpenVPN \
+   OpenConnect \
+   Exchange2 \
+   TrustmeService \
+   GmsCore \
+   GsfProxy \
+   FakeStore \
+   IchnaeaNlpBackend
+
+PRODUCT_PACKAGES += \
+   TrustmeKeyguard \
+   power-proxy \
    sensors-server \
    gps-server \
-   power-proxy \
-   wpad \
-   resolv_sync \
-   TrustmeKeyguard
+   resolv_sync
+
+# codeaurora and lineageos packages
+PRODUCT_PACKAGES += \
+   Eleven \
+   SnapdragonGallery
 
 PRODUCT_COPY_FILES += \
     device/fraunhofer/trustme_generic/a0/trustme-bootanimation-1080.zip:system/media/bootanimation.zip \
     device/fraunhofer/trustme_generic/a0/dnsmasq.conf:system/etc/dnsmasq.conf \
 
-# Overwrite disabled functions with empty xmls
-PRODUCT_COPY_FILES += \
-    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
-    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.usb.host.xml \
-    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.nfc.xml \
-    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.nfc.hce.xml \
-    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
-    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.location.gps.xml
-
-# Copy trustme specific handheld_core_hardware.xml (e.g., removed camera and bluetooth)
-PRODUCT_COPY_FILES += \
-    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/handheld_core_hardware.xml \
-    device/fraunhofer/trustme_generic/trustme_generic_hardware.xml:system/etc/permissions/trustme_generic_hardware.xml
-
 ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
 PRODUCT_COPY_FILES += \
     trustme/build/device_provisioning/test_certificates/dev.user.adbkey.pub:root/adb_keys
 endif
+
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    ro.adb.secure=1
+
+PRODUCT_COPY_FILES += \
+    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.location.gps.xml
+
+# set default permission for microg services (FAKE_SIGNATURE)
+PRODUCT_COPY_FILES += \
+    device/fraunhofer/trustme_generic/aX/microg-permissions.xml:system/etc/default-permissions/microg-permissions.xml \
+    device/fraunhofer/trustme_generic/aX/microg-sysconfig.xml:system/etc/sysconfig/microg-sysconfig.xml
+
+### overwrite ssh files
+#PRODUCT_COPY_FILES += \
+#   device/fraunhofer/trustme_hammerhead_aX/rootdir/system/bin/start-ssh:system/bin/start-ssh \
+#   device/fraunhofer/trustme_hammerhead_aX/rootdir/system/etc/ssh/sshd_config:system/etc/ssh/sshd_config
+
+# BW: revert to using vendor-provided *_supplicant_overlay.conf files without hardcoded network (fix TRUSTME-761)
+#$(shell mkdir -p out/target/product/trustme_hammerhead_aX/system/etc/wifi/)
+#$(shell cp device/fraunhofer/trustme_hammerhead_aX/wpa_supplicant_overlay.conf   out/target/product/trustme_hammerhead_aX/system/etc/wifi/)
+#$(shell cp device/fraunhofer/trustme_hammerhead_aX/p2p_supplicant_overlay.conf   out/target/product/trustme_hammerhead_aX/system/etc/wifi/)
+

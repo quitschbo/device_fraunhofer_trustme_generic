@@ -25,8 +25,6 @@ PRODUCT_PACKAGES += \
    Launcher3 \
    WallpaperPicker \
    ChromePublic \
-   wpa_proxy \
-   wifi_enable \
    sensors-client.default \
    gps-client.default \
    rilproxy \
@@ -61,6 +59,26 @@ PRODUCT_COPY_FILES += \
     device/fraunhofer/trustme_generic/aX/microg-permissions.xml:system/etc/default-permissions/microg-permissions.xml \
     device/fraunhofer/trustme_generic/aX/microg-sysconfig.xml:system/etc/sysconfig/microg-sysconfig.xml
 
+# Overwrite disabled functions with empty xmls
+PRODUCT_COPY_FILES += \
+    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
+    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.usb.host.xml \
+    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.nfc.xml \
+    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.nfc.hce.xml \
+    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
+    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.wifi.xml \
+    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
+    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/android.hardware.telephony.cdma.xml
+
+# Copy trustme specific handheld_core_hardware.xml (e.g., removed camera and bluetooth)
+PRODUCT_COPY_FILES += \
+    device/fraunhofer/trustme_generic/empty.xml:system/etc/permissions/handheld_core_hardware.xml \
+    device/fraunhofer/trustme_generic/trustme_generic_hardware.xml:system/etc/permissions/trustme_generic_hardware.xml
+
+# enable ethernet
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml
+
 ### overwrite ssh files
 #PRODUCT_COPY_FILES += \
 #   device/fraunhofer/trustme_hammerhead_aX/rootdir/system/bin/start-ssh:system/bin/start-ssh \
@@ -71,3 +89,6 @@ PRODUCT_COPY_FILES += \
 #$(shell cp device/fraunhofer/trustme_hammerhead_aX/wpa_supplicant_overlay.conf   out/target/product/trustme_hammerhead_aX/system/etc/wifi/)
 #$(shell cp device/fraunhofer/trustme_hammerhead_aX/p2p_supplicant_overlay.conf   out/target/product/trustme_hammerhead_aX/system/etc/wifi/)
 
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    wifi.interface= 
