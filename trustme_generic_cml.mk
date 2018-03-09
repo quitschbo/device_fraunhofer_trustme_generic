@@ -40,6 +40,7 @@ PRODUCT_PACKAGES += \
 	busybox-android \
 	charger charger_res_images \
 	dnsmasq_static \
+	xattr_view \
 	cml-run
 
 ifneq ($(TRUSTME_HARDWARE), x86)
